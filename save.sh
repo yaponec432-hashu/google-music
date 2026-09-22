@@ -4,7 +4,11 @@
 set -e
 
 main() {
-    zip -0 ../google-music.zip -- ./* ./.*
+    zip -9 ../google-music.zip -- ./* ./.*
+    local sha256
+    sha256="$(sha256sum ../google-music.zip | cut -f1 -d ' ')"
+    echo "${sha256}"
+    mv -v ../google-music.zip "../google-music-${sha256}.zip"
 }
 
 main
