@@ -3,6 +3,9 @@
 # Download music
 set -e -o pipefail
 
+FILTER='acompressor=threshold=0.6:ratio=4:link=maximum,virtualbass'
+FILTER="${FILTER},alimiter=limit=0.95"
+
 download() {
     local file_name="${1}"
     local link="${2}"
@@ -11,8 +14,7 @@ download() {
     yt-dlp "${link}" -f 251/140/ba --cookies "${HOME}/cookies" -r 1M \
         --min-sleep-interval 15 --max-sleep-interval 30 --xff jp -o - \
         | ffmpeg -v 24 -stats -y -i - -vn -c:a libopus -vbr on -b:a 128k \
-        -af 'acompressor=threshold=0.6:ratio=4:link=maximum,bass=g=4' \
-        -- "./${file_name}.ogg"
+        -af "${FILTER}" -- "./${file_name}.ogg"
 }
 
 main() {
