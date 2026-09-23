@@ -4,7 +4,7 @@
 set -e -o pipefail
 
 FILTER='acompressor=threshold=0.6:ratio=4:link=maximum,virtualbass'
-FILTER="${FILTER},alimiter=limit=0.95"
+FILTER="${FILTER},equalizer=f=3500:t=h:w=3000:g=-10,alimiter=limit=0.95"
 
 download() {
     local file_name="${1}"
