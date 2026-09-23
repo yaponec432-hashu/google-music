@@ -4,8 +4,9 @@
 set -e
 
 main() {
-    echo '#EXTM3U' > ./playlist.m3u8
-    ls ./*.ogg >> ./playlist.m3u8
+    local playlist='./playlist.m3u8'
+    echo '#EXTM3U' > "${playlist}"
+    ls ./*.ogg >> "${playlist}"
 }
 
 main
