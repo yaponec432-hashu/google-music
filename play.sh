@@ -1,6 +1,6 @@
 #!/data/data/com.termux/files/usr/bin/env bash
 # SPDX-License-Identifier: 0BSD
-# Play music
+# Play the playlist
 set -e
 
 main() {
