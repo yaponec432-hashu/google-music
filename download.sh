@@ -5,9 +5,9 @@ set -e -o pipefail
 
 FILTER='bass=g=6,equalizer=f=3500:t=h:w=3000:g=-10,crossfeed,loudnorm'
 FILTER="${FILTER}=stats_file=-:print_format=json"
-TEMP_FILE="${TMPDIR}/google-music-temp.m4a"
 
 download() {
+    local temp_file="${TMPDIR}/google-music-temp.m4a"
     local file_name="${1/,*}"
     local link="${1#*,}"
 
@@ -15,10 +15,10 @@ download() {
     echo "Downloading ${file_name}"
     yt-dlp "${link}" -f 140 --cookies "${HOME}/cookies" \
         --min-sleep-interval 3 --max-sleep-interval 5 --embed-metadata \
-        --force-overwrites -o "${TEMP_FILE}"
+        --force-overwrites -o "${temp_file}"
 
     local json
-    json="$(ffmpeg -v 24 -stats -i ${TEMP_FILE} -vn -af ${FILTER} \
+    json="$(ffmpeg -v 24 -stats -i ${temp_file} -vn -af ${FILTER} \
         -f null -- - \
         | sed -n '/{/,/}/p' | tr -d '":,' | awk '{print $2}')"
 
@@ -35,7 +35,7 @@ download() {
     measured="${FILTER}:measured_i=${i}:measured_tp=${tp}:measured_lra=${lra}"
     measured="${measured}:measured_thresh=${thresh}"
 
-    ffmpeg -v 24 -stats -y -i "${TEMP_FILE}" -vn -c:a aac -b:a 128k \
+    ffmpeg -v 24 -stats -y -i "${temp_file}" -vn -c:a aac -b:a 128k \
         -af "${measured}" -- "./${file_name}.m4a"
 }
 
