@@ -13,7 +13,7 @@ download() {
 
     [[ -f "${file_name}.ogg" ]] && return
     echo "Downloading ${file_name}"
-    yt-dlp "${link}" -f 140 --cookies "${HOME}/cookies" \
+    yt-dlp "${link}" -f 140/ba --cookies "${HOME}/cookies" \
         --min-sleep-interval 3 --max-sleep-interval 5 --embed-metadata \
         --force-overwrites -o "${temp_file}"
 
