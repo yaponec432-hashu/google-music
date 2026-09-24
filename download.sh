@@ -4,8 +4,8 @@
 set -e -o pipefail
 
 FILTER='acompressor=threshold=0.6:ratio=4:link=maximum,bass=g=6'
-FILTER="${FILTER},treble=f=12000:g=6,alimiter=limit=0.95"
-FILTER="${FILTER},equalizer=f=3500:t=h:w=3000:g=-10,volume=0.5"
+FILTER="${FILTER},treble=f=12000:g=6,equalizer=f=3500:t=h:w=3000:g=-10"
+FILTER="${FILTER},volume=0.5,alimiter=limit=0.95"
 
 download() {
     local file_name="${1}"
