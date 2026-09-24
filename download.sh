@@ -1,7 +1,7 @@
 #!/data/data/com.termux/files/usr/bin/env bash
 # SPDX-License-Identifier: 0BSD
 # Download music
-set -eu -o pipefail
+set -e -o pipefail
 
 FILTER='bass=g=6,equalizer=f=3500:t=h:w=3000:g=-10,crossfeed,loudnorm'
 FILTER="${FILTER}=stats_file=-:print_format=json"
