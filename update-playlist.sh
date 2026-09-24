@@ -6,7 +6,7 @@ set -e
 main() {
     local playlist='./playlist.m3u8'
     echo '#EXTM3U' > "${playlist}"
-    find . -maxdepth 1 -type f -name '*.ogg' >> "${playlist}"
+    find . -maxdepth 1 -type f -name '*.m4a' >> "${playlist}"
 }
 
 main
