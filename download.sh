@@ -1,42 +1,26 @@
 #!/data/data/com.termux/files/usr/bin/env bash
 # SPDX-License-Identifier: 0BSD
 # Download the music
-set -e -o pipefail
 
-FILTER='bass=g=6,equalizer=f=3500:t=h:w=3000:g=-10,crossfeed,loudnorm'
-FILTER="${FILTER}=stats_file=-:print_format=json"
+FILTER='equalizer=f=3500:t=h:w=3000:g=-10,crossfeed,virtualbass'
+FILTER="${FILTER},pan=stereo|FL=FL+LFE|FR=FR+LFE,highpass=f=80"
+FILTER="${FILTER},alimiter=limit=0.95,volume=0.05"
 
 download() {
-    local temp_file="${TMPDIR}/google-music-temp.m4a"
     local file_name="${1/,*}"
     local link="${1#*,}"
 
-    [[ -f "${file_name}.ogg" ]] && return
+    local output_file="./${file_name}.m4a"
+    [[ -f "${output_file}" ]] && return
     echo "Downloading ${file_name}"
-    yt-dlp "${link}" -f 140/ba --cookies "${HOME}/cookies" \
-        --min-sleep-interval 3 --max-sleep-interval 5 --embed-metadata \
+
+    local temp_file="${TMPDIR}/google-music-temp.m4a"
+    yt-dlp "${link}" -f 140 --cookies "${HOME}/cookies" \
+        --min-sleep-interval 1 --max-sleep-interval 3 --embed-metadata \
         --force-overwrites -o "${temp_file}"
 
-    local data
-    data="$(ffmpeg -v 24 -stats -i ${temp_file} -vn -af ${FILTER} \
-        -f null -- - \
-        | sed -n '/{/,/}/p' | tr -d '":,' | awk '{print $2}')"
-
-    local i
-    local tp
-    local lra
-    local thresh
-    i=$(echo "${data}" | sed -n 2p)
-    tp=$(echo "${data}" | sed -n 3p)
-    lra=$(echo "${data}" | sed -n 4p)
-    thresh=$(echo "${data}" | sed -n 5p)
-
-    local measured
-    measured="${FILTER}:measured_i=${i}:measured_tp=${tp}:measured_lra=${lra}"
-    measured="${measured}:measured_thresh=${thresh}"
-
-    ffmpeg -v 24 -stats -y -i "${temp_file}" -vn -c:a aac -b:a 128k \
-        -af "${measured}" -- "./${file_name}.m4a"
+    ffmpeg -v 24 -stats -y -i "${temp_file}" -vn -c:a aac \
+        -af "${FILTER}" -- "${output_file}"
 }
 
 main() {
