@@ -5,7 +5,7 @@ set -e
 
 main() {
     local archive='../google-music.zip'
-    zip -9 "${archive}" -- ./*
+    zip -9r "${archive}" -- .
     local hash
     hash="$(sha256sum ${archive} | cut -f1 -d ' ')"
     mv -v "${archive}" "../google-music-${hash}.zip"
