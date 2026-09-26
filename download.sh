@@ -2,9 +2,9 @@
 # SPDX-License-Identifier: 0BSD
 # Download the music
 
-FILTER='equalizer=f=3500:t=h:w=3000:g=-10,crossfeed,virtualbass'
-FILTER="${FILTER},pan=stereo|FL=FL+LFE|FR=FR+LFE,highpass=f=80"
-FILTER="${FILTER},alimiter=limit=0.95,volume=0.05"
+FILTER='crossfeed,virtualbass,pan=stereo|FL=FL+LFE|FR=FR+LFE'
+FILTER="${FILTER},equalizer=f=3500:t=h:w=3000:g=-10,highpass=f=80"
+FILTER="${FILTER},alimiter=limit=0.95,dynaudnorm=f=8000:p=0.1"
 
 download() {
     local file_name="${1/,*}"
@@ -20,7 +20,8 @@ download() {
         --force-overwrites -o "${temp_file}"
 
     ffmpeg -v 24 -stats -y -i "${temp_file}" -vn -c:a aac \
-        -af "${FILTER}" -- "${output_file}"
+        -movflags +faststart+use_metadata_tags -af "${FILTER}" \
+        -- "${output_file}"
 }
 
 main() {
