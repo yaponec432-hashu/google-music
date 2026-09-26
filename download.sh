@@ -7,6 +7,13 @@ FILTER='virtualbass,pan=stereo|FL=FL+LFE|FR=FR+LFE,equalizer=f=3500:t=h:w=3000'
 FILTER="${FILTER}:g=-10,highpass=f=80,crossfeed,alimiter=limit=0.95"
 FILTER="${FILTER},loudnorm=lra=50:tp=-9:i=-28"
 
+get_value() {
+    local data="${1}"
+    local regex="${2}"
+
+    echo "${data}" | grep "${regex}" | awk '{print $2}'
+}
+
 download() {
     local file_name="${1/,*}"
     local link="${1#*,}"
@@ -25,10 +32,10 @@ download() {
         -af ebur128=framelog=quiet:peak=true -f null - 2>&1)"
 
     local i tp lra threshold
-    i=$(echo "${data}" | grep 'I: .* LUFS$' | awk '{print $2}')
-    tp=$(echo "${data}" | grep 'Peak: .* dBFS$' | awk '{print $2}')
-    lra=$(echo "${data}" | grep 'LRA: .* LU$' | awk '{print $2}')
-    threshold=$(echo "${data}" | grep 'Threshold: .* LUFS$' | awk '{print $2}')
+    i=$(get_value "${data}" 'I: .* LUFS$')
+    tp=$(get_value "${data}" 'Peak: .* dBFS$')
+    lra=$(get_value "${data}" 'LRA: .* LU$')
+    threshold=$(get_value "${data}" 'Threshold: .* LUFS$')
 
     local filter
     filter="${FILTER}:measured_I=${i}:measured_TP=${tp}:measured_LRA=${lra}"
