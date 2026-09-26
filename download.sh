@@ -5,7 +5,7 @@
 # Reduce the ear fatigue
 FILTER='virtualbass,pan=stereo|FL=FL+LFE|FR=FR+LFE,equalizer=f=3500:t=h:w=3000'
 FILTER="${FILTER}:g=-10,highpass=f=80,crossfeed,alimiter=limit=0.95"
-FILTER="${FILTER},loudnorm=lra=50:tp=-9:i=-28"
+FILTER="${FILTER},loudnorm=lra=50:tp=-9:i=-32"
 
 get_value() {
     local data="${1}"
